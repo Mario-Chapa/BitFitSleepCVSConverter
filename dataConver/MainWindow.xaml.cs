@@ -29,6 +29,25 @@ namespace dataConver
 
     }
 
+    class SleepTimes
+    {
+        public string startTime { get; set; }
+        public string endTime { get; set; }
+        //public string dateOfSleep { get; set; }
+        //public string duration { get; set; }
+        //public string efficiency { get; set; }
+        //public string infoCode { get; set; }
+        //public string isMainSleep { get; set; }
+        //public string levels { get; set; }
+        //public string logId { get; set; }
+        //public string minutesAfterWakeup { get; set; }
+        //public string minutesAsleep { get; set; }
+        //public string minutesAwake { get; set; }
+        //public string minutesToFallAsleep { get; set; }
+        //public string timeInBed { get; set; }
+        //public string type { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -119,23 +138,55 @@ namespace dataConver
 
             JObject fitBitData = JObject.Parse(json);
 
+            ////Obtain start and end times
+            //IList<JToken> dates = fitBitData["sleep"].Children().ToList();
+            //SleepTimes sleeptimes = new SleepTimes();
+            //foreach (JToken bit in dates)
+            //{
+            //    // JToken.ToObject is a helper method that uses JsonSerializer internally
+            //    sleeptimes = bit.ToObject<SleepTimes>();
+            //    //Console.WriteLine("datetime: " + bitfit.datetime + "level: " + bitfit.level + "secs: " + bitfit.seconds);
+            //}
+
+            //DateTime sleepStarted = DateTime.Parse(sleeptimes.startTime);
+            //DateTime sleepEnded = DateTime.Parse(sleeptimes.endTime);
+
+            //TimeSpan span = (sleepEnded - sleepStarted);
+            //string a = sleepStarted.ToString("o");
+            
             // get JSON result objects into a list
             IList<JToken> databits = fitBitData["sleep"][0]["levels"]["data"].Children().ToList();
 
             // serialize JSON results into .NET objects
             var csv = new StringBuilder();
-            csv.AppendLine("datetime,level,seconds");
+            csv.AppendLine("datetime,level");
 
-            IList<SleepDataBit> datalist = new List<SleepDataBit>();
+            //IList<SleepDataBit> datalist = new List<SleepDataBit>();
+            List<SleepDataBit> sleepData = new List<SleepDataBit>();
             foreach (JToken bit in databits)
             {
                 // JToken.ToObject is a helper method that uses JsonSerializer internally
-                SleepDataBit bitfit = bit.ToObject<SleepDataBit>();
+                sleepData.Add(bit.ToObject<SleepDataBit>());
                 //Console.WriteLine("datetime: " + bitfit.datetime + "level: " + bitfit.level + "secs: " + bitfit.seconds);
 
-                var newLine = string.Format("{0},{1},{2}", bitfit.datetime, bitfit.level, bitfit.seconds);
-                csv.AppendLine(newLine);
             }   
+            for(int i = 0; i < sleepData.Count; i++)
+            {
+                SleepDataBit thisdata = sleepData[i];
+                DateTime thisTimeStamp = DateTime.Parse(thisdata.datetime);
+                //TimeSpan spaned = (DateTime.Parse(sleepData[i+1].datetime) - DateTime.Parse(sleepData[i].datetime));
+                //int numrows = (int)Math.Ceiling(spaned.TotalSeconds);
+
+                for(int j = 0; j < int.Parse(thisdata.seconds); j++)
+                {
+                    DateTime ts = thisTimeStamp.AddSeconds(j);
+                    var newLine = string.Format("{0},{1}", ts.ToString("s") + ".000", sleepData[i].level);
+                    csv.AppendLine(newLine);
+
+                }
+            }
+
+
             File.WriteAllText(OutputPath, csv.ToString());
         }
 
