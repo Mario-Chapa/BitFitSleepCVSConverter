@@ -21,6 +21,14 @@ using System.Windows.Shapes;
 
 namespace dataConver
 {
+    enum SleepStates:uint
+    {
+        wake = 0,
+        light = 1,
+        deep = 2,
+        REM = 3
+    }
+
     class SleepDataBit
     {
         public string datetime { get; set; }
@@ -119,15 +127,19 @@ namespace dataConver
 
         private void LabelFolder_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            foreach(var file in queue)
+            int numfiles = 0;
+            foreach (var file in queue)
             {
                 CreateCSVOutput(file.FullName, dataoutfolder + "\\" + System.IO.Path.GetFileNameWithoutExtension(file.Name) + ".csv");
+                numfiles++;
             }
+            textBox1_folder.Text = "Finished processing" + numfiles + " c:";
         }
 
         private void Label_MouseUp(object sender, MouseButtonEventArgs e)
         {
             CreateCSVOutput(filePath, dataoutfolder + "\\" + System.IO.Path.GetFileNameWithoutExtension(filePath) + ".csv");
+            textBox1_folder.Text = "Finished c:";
         }
 
         private void CreateCSVOutput(string inputPath, string OutputPath)
@@ -153,7 +165,7 @@ namespace dataConver
 
             //TimeSpan span = (sleepEnded - sleepStarted);
             //string a = sleepStarted.ToString("o");
-            
+
             // get JSON result objects into a list
             IList<JToken> databits = fitBitData["sleep"][0]["levels"]["data"].Children().ToList();
 
@@ -169,26 +181,23 @@ namespace dataConver
                 sleepData.Add(bit.ToObject<SleepDataBit>());
                 //Console.WriteLine("datetime: " + bitfit.datetime + "level: " + bitfit.level + "secs: " + bitfit.seconds);
 
-            }   
-            for(int i = 0; i < sleepData.Count; i++)
+            }
+            for (int i = 0; i < sleepData.Count; i++)
             {
                 SleepDataBit thisdata = sleepData[i];
                 DateTime thisTimeStamp = DateTime.Parse(thisdata.datetime);
+                Enum.TryParse(sleepData[i].level, out SleepStates level);
                 //TimeSpan spaned = (DateTime.Parse(sleepData[i+1].datetime) - DateTime.Parse(sleepData[i].datetime));
                 //int numrows = (int)Math.Ceiling(spaned.TotalSeconds);
 
-                for(int j = 0; j < int.Parse(thisdata.seconds); j++)
+                for (int j = 0; j < int.Parse(thisdata.seconds); j++)
                 {
                     DateTime ts = thisTimeStamp.AddSeconds(j);
-                    var newLine = string.Format("{0},{1}", ts.ToString("s") + ".000", sleepData[i].level);
+                    var newLine = string.Format("{0},{1}", ts.ToString("s") + ".000", ((uint)level).ToString());
                     csv.AppendLine(newLine);
-
                 }
             }
-
-
             File.WriteAllText(OutputPath, csv.ToString());
         }
-
     }
 }
