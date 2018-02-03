@@ -23,11 +23,13 @@
             </Grid.RowDefinitions>
             <TextBox x:Name="textBox1" Grid.Row="1" Grid.ColumnSpan="2" Text="Select file plz..." Background="White"></TextBox>
             <Label  Grid.Row="1" Grid.Column="2" Content="File..." MouseUp="FileSelect_MouseUp" Background="Gray"/>
-            <Label x:Name="lblConvert" IsEnabled="False" Grid.Row="3" Grid.Column="1" Content="Convert" MouseUp="Label_MouseUp" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray"></Label>
-            
+            <Label x:Name="lblConvert" IsEnabled="False" Grid.Row="3" Grid.Column="1" Content="Sleep Data" MouseUp="Sleep_MouseUp" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray" Margin="43,29,40,29" Width="96"></Label>
+            <Label x:Name="lblConvertHR" IsEnabled="False" Grid.Row="3" Grid.Column="0" Content="HR Data" MouseUp="HeartOutput_MouseUp" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray"></Label>
+
             <Label  Grid.Row="4" Grid.Column="2" Content="Folder..." MouseUp="FolderSelect_MouseUp" Background="Gray" Margin="0,0,0,59"/>
             <TextBox x:Name="textBox1_folder" Grid.Row="4" Grid.ColumnSpan="2" Text="Select folder plz..." Background="White" Margin="0,0,0,59"/>
-            <Label x:Name="lblFolderConvert" IsEnabled="False" Grid.Row="4" Grid.Column="1" Content="Convert" MouseUp="LabelFolder_MouseUp" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray" Margin="62,42,61,17"/>
+            <Label x:Name="lblFolderConvert" IsEnabled="False" Grid.Row="4" Grid.Column="1" Content="SleepData" MouseUp="SleepFoder_MouseUp" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray" Margin="43,42,40,17" Width="96"/>
+            <Label x:Name="lblConvertHR_Copy" IsEnabled="False" Grid.Row="4" Grid.Column="0" Content="HR Data" MouseUp="HeartOutputFolder_MouseUp" VerticalAlignment="Center" HorizontalAlignment="Center" Background="LightGray" Margin="60,42,60,17"/>
         </Grid>
     </Grid>
 </Window>
